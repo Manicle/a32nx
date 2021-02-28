@@ -60,7 +60,11 @@ class SimConnectInterface {
 
   bool setClientDataLocalVariables(ClientDataLocalVariables output);
 
+  bool setClientDataLocalVariablesAutothrust(ClientDataLocalVariablesAutothrust output);
+
   void resetSimInputAutopilot();
+
+  void resetSimInputThrottles();
 
   SimData getSimData();
 
@@ -76,6 +80,8 @@ class SimConnectInterface {
   bool setClientDataAutopilotLaws(ClientDataAutopilotLaws output);
   ClientDataAutopilotLaws getClientDataAutopilotLaws();
 
+  ClientDataAutothrust getClientDataAutothrust();
+
   bool getIsAnyReverseToggleActive();
   bool getIsReverseToggleActive(int index);
   bool getIsAutothrottlesArmed();
@@ -84,7 +90,9 @@ class SimConnectInterface {
   enum ClientData {
     AUTOPILOT_STATE_MACHINE,
     AUTOPILOT_LAWS,
+    AUTOTHRUST,
     LOCAL_VARIABLES,
+    LOCAL_VARIABLES_AUTOTHRUST,
   };
 
   enum Events {
@@ -170,6 +178,7 @@ class SimConnectInterface {
 
   ClientDataAutopilotStateMachine clientDataAutopilotStateMachine = {};
   ClientDataAutopilotLaws clientDataAutopilotLaws = {};
+  ClientDataAutothrust clientDataAutothrust = {};
 
   bool prepareSimDataSimConnectDataDefinitions();
 

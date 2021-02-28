@@ -98,6 +98,10 @@ struct SimData {
   unsigned long long gpsIsFlightPlanActive;
   double gpsWpCrossTrack;
   double gpsWpTrackAngleError;
+  double commanded_engine_N1_1_percent;
+  double commanded_engine_N1_2_percent;
+  double engine_N1_1_percent;
+  double engine_N1_2_percent;
 };
 
 struct SimInput {
@@ -119,6 +123,7 @@ struct SimInputAutopilot {
 };
 
 struct SimInputThrottles {
+  double ATHR_push;
   double throttles[2];
 };
 
@@ -136,9 +141,20 @@ struct SimOutputZetaTrim {
   double zeta_trim_pos;
 };
 
+// GENERAL ENG THROTTLE MANAGED MODE:<1|2>
+// UNKNOWN  = 0
+// REVERSE  = 1
+// IDLE     = 2
+// AUTO     = 3
+// CLIMB    = 4
+// FLEX_MCT = 5
+// TOGA     = 6
+// HOLD     = 7
 struct SimOutputThrottles {
   double throttleLeverPosition_1;
   double throttleLeverPosition_2;
+  double throttleManagedMode_1;
+  double throttleManagedMode_2;
 };
 
 struct SimOutputEngineOverride {
@@ -175,6 +191,20 @@ struct ClientDataAutopilotLaws {
   double autopilotBeta;
 };
 
+struct ClientDataAutothrust {
+  double N1_TLA_1_percent;
+  double N1_TLA_2_percent;
+  double is_in_reverse_1;
+  double is_in_reverse_2;
+  double thrust_limit_type;
+  double thrust_limit_percent;
+  double N1_c_1_percent;
+  double N1_c_2_percent;
+  double status;
+  double mode;
+  double mode_message;
+};
+
 struct ClientDataLocalVariables {
   double flightPhase;
   double V2;
@@ -195,4 +225,20 @@ struct ClientDataLocalVariables {
   double fcuSelectedHeading;
   double crossTrackError;
   double trackAngleError;
+};
+
+struct ClientDataLocalVariablesAutothrust {
+  double ATHR_push;
+  double TLA_1;
+  double TLA_2;
+  double V_c_kn;
+  double V_LS_kn;
+  double V_MAX_kn;
+  double thrust_limit_REV_percent;
+  double thrust_limit_IDLE_percent;
+  double thrust_limit_CLB_percent;
+  double thrust_limit_MCT_percent;
+  double thrust_limit_FLEX_percent;
+  double thrust_limit_TOGA_percent;
+  double mode_requested;
 };

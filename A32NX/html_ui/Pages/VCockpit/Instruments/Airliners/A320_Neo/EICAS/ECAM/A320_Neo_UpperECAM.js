@@ -2015,12 +2015,12 @@ var A320_Neo_UpperECAM;
             return value;
         }
         getN1GaugeThrottleValue() {
-            const throttle = Math.abs(Simplane.getEngineThrottleCommandedN1(this.index));
+            const throttle = Math.abs(SimVar.GetSimVarValue("L:A32NX_AUTOTHRUST_TLA_N1:" + (this.index + 1), "number"));
             const value = throttle * A320_Neo_UpperECAM.Definitions.THROTTLE_TO_N1_GAUGE;
             return value;
         }
         getThrottlePosition() {
-            return Math.abs(Simplane.getEngineThrottleCommandedN1(this.index));
+            return Math.abs(SimVar.GetSimVarValue("L:A32NX_AUTOTHRUST_TLA_N1:" + (this.index + 1), "number"));
         }
         getN1GaugeAutopilotThrottleValues(_values) {
             // This seems broken

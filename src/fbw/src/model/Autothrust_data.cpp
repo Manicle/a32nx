@@ -35,6 +35,13 @@ Parameters_Autothrust_T AutothrustModelClass::Autothrust_P = {
 
     {
       0,
+      0,
+      0,
+      0
+    },
+
+    {
+      0,
       0.0,
       0.0,
       0.0,
@@ -45,6 +52,13 @@ Parameters_Autothrust_T AutothrustModelClass::Autothrust_P = {
       0.0,
       0.0,
       0.0,
+      0.0,
+      0.0,
+      0,
+      0,
+      0,
+      0,
+      0,
       0.0,
       0.0
     },
@@ -76,6 +90,14 @@ Parameters_Autothrust_T AutothrustModelClass::Autothrust_P = {
 
   1.0,
 
+  1.0,
+
+  1.0,
+
+  1.0,
+
+  0.0,
+
   0.0,
 
   0.0,
@@ -100,7 +122,33 @@ Parameters_Autothrust_T AutothrustModelClass::Autothrust_P = {
 
   0.0,
 
-  0.0,
+  15.0,
+
+  0.5,
+
+  athr_status_ENGAGED_ACTIVE,
+
+  0,
+
+  0,
+
+  0,
+
+  0,
+
+  0.5,
+
+  0.5,
+
+  0.017453292519943295,
+
+  0.1019367991845056,
+
+  57.295779513082323,
+
+  -1.5,
+
+  2.0,
 
   0.0,
 
@@ -118,17 +166,19 @@ Parameters_Autothrust_T AutothrustModelClass::Autothrust_P = {
 
   0.0,
 
+  5.0,
 
-  { 45.0, 19.5, 70.0, 80.0, 90.0 },
+  0.0,
 
+  2.0,
 
-  { -20.0, 0.0, 89.0, 95.0, 100.0 },
+  0.0,
 
+  0.06,
 
-  { 45.0, 19.5, 70.0, 80.0, 90.0 },
+  -0.06,
 
-
-  { -20.0, 0.0, 89.0, 95.0, 100.0 },
+  0.0,
 
   5.0,
 
@@ -136,5 +186,15 @@ Parameters_Autothrust_T AutothrustModelClass::Autothrust_P = {
 
   5.0,
 
-  -5.0
+  -5.0,
+
+
+  { 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0 },
+
+  0,
+
+
+  { 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0 },
+
+  0
 };

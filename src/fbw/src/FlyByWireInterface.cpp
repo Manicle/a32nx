@@ -944,6 +944,16 @@ bool FlyByWireInterface::processThrottles() {
     autoThrust.Autothrust_U.in.input.thrust_limit_FLEX_percent = 81.0;
     autoThrust.Autothrust_U.in.input.thrust_limit_TOGA_percent = 85.0;
     autoThrust.Autothrust_U.in.input.mode_requested = autopilotStateMachineOutput.autothrust_mode;
+    autoThrust.Autothrust_U.in.input.is_mach_mode_active = 0;
+    autoThrust.Autothrust_U.in.input.alpha_floor_condition = 0;
+    autoThrust.Autothrust_U.in.input.is_approach_mode_active =
+        autopilotStateMachineOutput.vertical_mode >= 30 && autopilotStateMachineOutput.vertical_mode <= 34;
+    autoThrust.Autothrust_U.in.input.is_SRS_TO_mode_active = autopilotStateMachineOutput.vertical_mode == 40;
+    autoThrust.Autothrust_U.in.input.is_SRS_GA_mode_active = autopilotStateMachineOutput.vertical_mode == 41;
+    autoThrust.Autothrust_U.in.input.thrust_reduction_altitude =
+        get_named_variable_value(idFmgcThrustReductionAltitude);
+    autoThrust.Autothrust_U.in.input.thrust_reduction_altitude_go_around =
+        get_named_variable_value(idFmgcThrustReductionAltitudeGoAround);
 
     autoThrust.step();
 
@@ -975,14 +985,21 @@ bool FlyByWireInterface::processThrottles() {
         simOutputThrottles.throttleLeverPosition_2,
         simData.ap_V_c_kn,
         get_named_variable_value(idFmgcV_LS),
-        350,
-        -45,
-        19.5,
-        80,
-        81,
-        81,
-        85,
+        350,   // V_MAX
+        -45,   // REV
+        19.5,  // IDLE
+        80,    // CLB
+        81,    // FLX
+        81,    // MCT
+        85,    // TOGA
         autopilotStateMachineOutput.autothrust_mode,
+        0,  // mach mode
+        0,  // alpha floor
+        autopilotStateMachineOutput.vertical_mode >= 30 && autopilotStateMachineOutput.vertical_mode <= 34,
+        autopilotStateMachineOutput.vertical_mode == 40,
+        autopilotStateMachineOutput.vertical_mode == 41,
+        get_named_variable_value(idFmgcThrustReductionAltitude),
+        get_named_variable_value(idFmgcThrustReductionAltitudeGoAround),
     };
     simConnectInterface.setClientDataLocalVariablesAutothrust(ClientDataLocalVariablesAutothrust);
 
@@ -999,15 +1016,6 @@ bool FlyByWireInterface::processThrottles() {
     set_named_variable_value(idAutothrustStatus, clientData.status);
     set_named_variable_value(idAutothrustMode, clientData.mode);
     set_named_variable_value(idAutothrustModeMessage, clientData.mode_message);
-  }
-
-  // determine if autothrust armed event needs to be triggered
-  if (simConnectInterface.getIsAutothrottlesArmed() && simOutputThrottles.throttleLeverPosition_1 < 1 &&
-      simOutputThrottles.throttleLeverPosition_2 < 1) {
-    if (!simConnectInterface.sendAutoThrustArmEvent()) {
-      std::cout << "WASM: Write data failed!" << endl;
-      return false;
-    }
   }
 
   // reset button state

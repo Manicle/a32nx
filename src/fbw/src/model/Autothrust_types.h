@@ -58,6 +58,13 @@ typedef struct {
   real_T thrust_limit_FLEX_percent;
   real_T thrust_limit_TOGA_percent;
   real_T mode_requested;
+  boolean_T is_mach_mode_active;
+  boolean_T alpha_floor_condition;
+  boolean_T is_approach_mode_active;
+  boolean_T is_SRS_TO_mode_active;
+  boolean_T is_SRS_GA_mode_active;
+  real_T thrust_reduction_altitude;
+  real_T thrust_reduction_altitude_go_around;
 } athr_input;
 
 #endif
@@ -73,6 +80,17 @@ typedef struct {
 
 #endif
 
+#ifndef DEFINED_TYPEDEF_FOR_athr_status_
+#define DEFINED_TYPEDEF_FOR_athr_status_
+
+typedef enum {
+  athr_status_DISENGAGED = 0,
+  athr_status_ENGAGED_ARMED,
+  athr_status_ENGAGED_ACTIVE
+} athr_status;
+
+#endif
+
 #ifndef DEFINED_TYPEDEF_FOR_athr_thrust_limit_type_
 #define DEFINED_TYPEDEF_FOR_athr_thrust_limit_type_
 
@@ -84,17 +102,6 @@ typedef enum {
   athr_thrust_limit_type_TOGA,
   athr_thrust_limit_type_REVERSE
 } athr_thrust_limit_type;
-
-#endif
-
-#ifndef DEFINED_TYPEDEF_FOR_athr_status_
-#define DEFINED_TYPEDEF_FOR_athr_status_
-
-typedef enum {
-  athr_status_DISENGAGED = 0,
-  athr_status_ENGAGED_ARMED,
-  athr_status_ENGAGED_ACTIVE
-} athr_status;
 
 #endif
 
@@ -164,6 +171,18 @@ typedef struct {
 
 #endif
 
+#ifndef DEFINED_TYPEDEF_FOR_athr_data_computed_
+#define DEFINED_TYPEDEF_FOR_athr_data_computed_
+
+typedef struct {
+  boolean_T TLA_in_active_range;
+  boolean_T is_FLX_active;
+  boolean_T ATHR_push;
+  boolean_T ATHR_disabled;
+} athr_data_computed;
+
+#endif
+
 #ifndef DEFINED_TYPEDEF_FOR_athr_output_
 #define DEFINED_TYPEDEF_FOR_athr_output_
 
@@ -193,6 +212,7 @@ typedef struct {
 typedef struct {
   athr_time time;
   athr_data data;
+  athr_data_computed data_computed;
   athr_input input;
   athr_output output;
 } athr_out;

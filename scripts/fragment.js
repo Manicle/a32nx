@@ -34,6 +34,7 @@ const execute = async () => {
         console.log(result);
     } catch (e) {
         console.error(e);
+        process.exit(1);
     }
 };
 

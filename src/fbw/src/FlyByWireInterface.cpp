@@ -724,22 +724,23 @@ void FlyByWireInterface::setupLocalVariables() {
   idFcuModeReversionActive = register_named_variable("A32NX_FCU_MODE_REVERSION_ACTIVE");
   idFcuModeReversionTrkFpaActive = register_named_variable("A32NX_FCU_MODE_REVERSION_TRK_FPA_ACTIVE");
 
-  idThrottlePosition_1 = register_named_variable("A32NX_THROTTLE_LEVER_POSITION_1");
-  idThrottlePosition_2 = register_named_variable("A32NX_THROTTLE_LEVER_POSITION_2");
   idThrottlePosition3d_1 = register_named_variable("A32NX_3D_THROTTLE_LEVER_POSITION_1");
   idThrottlePosition3d_2 = register_named_variable("A32NX_3D_THROTTLE_LEVER_POSITION_2");
 
-  idAutothrustTlaN1_1 = register_named_variable("A32NX_AUTOTHRUST_TLA_N1:1");
-  idAutothrustTlaN1_2 = register_named_variable("A32NX_AUTOTHRUST_TLA_N1:2");
-  idAutothrustReverse_1 = register_named_variable("A32NX_AUTOTHRUST_REVERSE:1");
-  idAutothrustReverse_2 = register_named_variable("A32NX_AUTOTHRUST_REVERSE:2");
-  idAutothrustThrustLimitType = register_named_variable("A32NX_AUTOTHRUST_THRUST_LIMIT_TYPE");
-  idAutothrustThrustLimit = register_named_variable("A32NX_AUTOTHRUST_THRUST_LIMIT");
-  idAutothrustN1_c_1 = register_named_variable("A32NX_AUTOTHRUST_N1_C:1");
-  idAutothrustN1_c_2 = register_named_variable("A32NX_AUTOTHRUST_N1_C:2");
   idAutothrustStatus = register_named_variable("A32NX_AUTOTHRUST_STATUS");
   idAutothrustMode = register_named_variable("A32NX_AUTOTHRUST_MODE");
   idAutothrustModeMessage = register_named_variable("A32NX_AUTOTHRUST_MODE_MESSAGE");
+
+  idAutothrustThrustLimitType = register_named_variable("A32NX_AUTOTHRUST_THRUST_LIMIT_TYPE");
+  idAutothrustThrustLimit = register_named_variable("A32NX_AUTOTHRUST_THRUST_LIMIT");
+  idAutothrust_TLA_1 = register_named_variable("A32NX_AUTOTHRUST_TLA:1");
+  idAutothrust_TLA_2 = register_named_variable("A32NX_AUTOTHRUST_TLA:2");
+  idAutothrustN1_TLA_1 = register_named_variable("A32NX_AUTOTHRUST_TLA_N1:1");
+  idAutothrustN1_TLA_2 = register_named_variable("A32NX_AUTOTHRUST_TLA_N1:2");
+  idAutothrustReverse_1 = register_named_variable("A32NX_AUTOTHRUST_REVERSE:1");
+  idAutothrustReverse_2 = register_named_variable("A32NX_AUTOTHRUST_REVERSE:2");
+  idAutothrustN1_c_1 = register_named_variable("A32NX_AUTOTHRUST_N1_COMMANDED:1");
+  idAutothrustN1_c_2 = register_named_variable("A32NX_AUTOTHRUST_N1_COMMANDED:2");
 }
 
 void FlyByWireInterface::loadConfiguration() {
@@ -799,13 +800,13 @@ void FlyByWireInterface::initializeThrottles() {
   if (useReverseOnAxis) {
     mappingTable.emplace_back(configuration.GetReal("Throttle", "DetentReverseFull", -1.00), -20.00);
     if (useReverseIdle) {
-      mappingTable.emplace_back(configuration.GetReal("Throttle", "DetentReverseIdle", -0.70), -5.00);
+      mappingTable.emplace_back(configuration.GetReal("Throttle", "DetentReverseIdle", -0.70), -6.00);
     }
   }
   mappingTable.emplace_back(configuration.GetReal("Throttle", "DetentIdle", useReverseOnAxis ? 0.00 : -1.00), 0.00);
-  mappingTable.emplace_back(configuration.GetReal("Throttle", "DetentClimb", 0.89), 89.00);
-  mappingTable.emplace_back(configuration.GetReal("Throttle", "DetentFlexMct", 0.95), 95.00);
-  mappingTable.emplace_back(configuration.GetReal("Throttle", "DetentTakeOffGoAround", 1.00), 100.00);
+  mappingTable.emplace_back(configuration.GetReal("Throttle", "DetentClimb", 0.89), 25.00);
+  mappingTable.emplace_back(configuration.GetReal("Throttle", "DetentFlexMct", 0.95), 35.00);
+  mappingTable.emplace_back(configuration.GetReal("Throttle", "DetentTakeOffGoAround", 1.00), 45.00);
 
   // remember idle throttle setting
   if (useReverseOnAxis) {
@@ -841,9 +842,9 @@ void FlyByWireInterface::initializeThrottles() {
   vector<pair<double, double>> mappingTable3d;
   mappingTable3d.emplace_back(-20.0, 0.0);
   mappingTable3d.emplace_back(0.0, 25.0);
-  mappingTable3d.emplace_back(89.0, 50.0);
-  mappingTable3d.emplace_back(95.0, 75.0);
-  mappingTable3d.emplace_back(100.0, 100.0);
+  mappingTable3d.emplace_back(25.0, 50.0);
+  mappingTable3d.emplace_back(35.0, 75.0);
+  mappingTable3d.emplace_back(45.0, 100.0);
   idThrottlePositionLookupTable.initialize(mappingTable3d, 0, 100);
 }
 
@@ -894,29 +895,12 @@ bool FlyByWireInterface::processThrottles() {
   }
 
   // set position for 3D animation
-  set_named_variable_value(idThrottlePosition_1, simOutputThrottles.throttleLeverPosition_1);
-  set_named_variable_value(idThrottlePosition_2, simOutputThrottles.throttleLeverPosition_2);
+  set_named_variable_value(idAutothrust_TLA_1, simOutputThrottles.throttleLeverPosition_1);
+  set_named_variable_value(idAutothrust_TLA_2, simOutputThrottles.throttleLeverPosition_2);
   set_named_variable_value(idThrottlePosition3d_1,
                            idThrottlePositionLookupTable.get(simOutputThrottles.throttleLeverPosition_1));
   set_named_variable_value(idThrottlePosition3d_2,
                            idThrottlePositionLookupTable.get(simOutputThrottles.throttleLeverPosition_2));
-
-  // calculate managed mode
-  simOutputThrottles.throttleManagedMode_1 = getThrottleManagedMode(simOutputThrottles.throttleLeverPosition_1);
-  simOutputThrottles.throttleManagedMode_2 = getThrottleManagedMode(simOutputThrottles.throttleLeverPosition_2);
-
-  double TLA_1;
-  double TLA_2;
-  double V_c_kn;
-  double V_LS_kn;
-  double V_MAX_kn;
-  double thrust_limit_REV_percent;
-  double thrust_limit_IDLE_percent;
-  double thrust_limit_CLB_percent;
-  double thrust_limit_MCT_percent;
-  double thrust_limit_FLEX_percent;
-  double thrust_limit_TOGA_percent;
-  double mode_requested;
 
   SimData simData = simConnectInterface.getSimData();
 
@@ -973,8 +957,8 @@ bool FlyByWireInterface::processThrottles() {
       return false;
     }
 
-    set_named_variable_value(idAutothrustTlaN1_1, autoThrust.Autothrust_Y.out.output.N1_TLA_1_percent);
-    set_named_variable_value(idAutothrustTlaN1_2, autoThrust.Autothrust_Y.out.output.N1_TLA_2_percent);
+    set_named_variable_value(idAutothrustN1_TLA_1, autoThrust.Autothrust_Y.out.output.N1_TLA_1_percent);
+    set_named_variable_value(idAutothrustN1_TLA_2, autoThrust.Autothrust_Y.out.output.N1_TLA_2_percent);
     set_named_variable_value(idAutothrustReverse_1, autoThrust.Autothrust_Y.out.output.is_in_reverse_1);
     set_named_variable_value(idAutothrustReverse_2, autoThrust.Autothrust_Y.out.output.is_in_reverse_2);
     set_named_variable_value(idAutothrustThrustLimitType, autoThrust.Autothrust_Y.out.output.thrust_limit_type);
@@ -1004,8 +988,8 @@ bool FlyByWireInterface::processThrottles() {
 
     // read data from client data
     ClientDataAutothrust clientData = simConnectInterface.getClientDataAutothrust();
-    set_named_variable_value(idAutothrustTlaN1_1, clientData.N1_TLA_1_percent);
-    set_named_variable_value(idAutothrustTlaN1_2, clientData.N1_TLA_2_percent);
+    set_named_variable_value(idAutothrustN1_TLA_1, clientData.N1_TLA_1_percent);
+    set_named_variable_value(idAutothrustN1_TLA_2, clientData.N1_TLA_2_percent);
     set_named_variable_value(idAutothrustReverse_1, clientData.is_in_reverse_1);
     set_named_variable_value(idAutothrustReverse_2, clientData.is_in_reverse_2);
     set_named_variable_value(idAutothrustThrustLimitType, clientData.thrust_limit_type);
@@ -1033,34 +1017,17 @@ bool FlyByWireInterface::processThrottles() {
   return true;
 }
 
-double FlyByWireInterface::getThrottleManagedMode(double input) {
-  if (input < 0) {
-    return 1;
-  } else if (input == 0) {
-    return 2;
-  } else if (input > 0 && input < 89) {
-    return 3;
-  } else if (input >= 89 && input < 95) {
-    return 4;
-  } else if (input >= 95 && input < 100) {
-    return 5;
-  } else if (input == 100) {
-    return 6;
-  }
-  return 0;
-}
-
 double FlyByWireInterface::calculateDeadzones(double deadzone, double input) {
   double result = input;
   if (useReverseOnAxis) {
     result = calculateDeadzone(deadzone, -20.0, result);
     if (useReverseIdle) {
-      result = calculateDeadzone(deadzone, -5.0, result);
+      result = calculateDeadzone(deadzone, -6.0, result);
     }
   }
   result = calculateDeadzone(deadzone, 0.0, result);
-  result = calculateDeadzone(deadzone, 89.0, result);
-  result = calculateDeadzone(deadzone, 95.0, result);
+  result = calculateDeadzone(deadzone, 25.0, result);
+  result = calculateDeadzone(deadzone, 35.0, result);
   return result;
 }
 

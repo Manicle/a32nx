@@ -127,8 +127,8 @@ class FlyByWireInterface {
   ID idFmgcAccelerationAltitudeGoAround;
   ID idFmgcCruiseAltitude;
 
-  ID idAutothrustTlaN1_1;
-  ID idAutothrustTlaN1_2;
+  ID idAutothrustN1_TLA_1;
+  ID idAutothrustN1_TLA_2;
   ID idAutothrustReverse_1;
   ID idAutothrustReverse_2;
   ID idAutothrustThrustLimitType;
@@ -138,8 +138,8 @@ class FlyByWireInterface {
   ID idAutothrustStatus;
   ID idAutothrustMode;
   ID idAutothrustModeMessage;
-  ID idThrottlePosition_1;
-  ID idThrottlePosition_2;
+  ID idAutothrust_TLA_1;
+  ID idAutothrust_TLA_2;
   ID idThrottlePosition3d_1;
   ID idThrottlePosition3d_2;
   InterpolatingLookupTable idThrottlePositionLookupTable;
@@ -167,6 +167,4 @@ class FlyByWireInterface {
   double calculateDeadzone(double deadzone, double target, double input);
 
   double smoothFlightDirector(double sampleTime, double factor, double limit, double currentValue, double targetValue);
-
-  double getThrottleManagedMode(double input);
 };
